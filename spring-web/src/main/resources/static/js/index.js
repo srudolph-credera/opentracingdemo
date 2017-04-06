@@ -138,6 +138,9 @@ $(function() {
         });
     };
 
+    // Calculate initial cross section
+    moveEndFunc(null);
+
     // Listen for moves
     markerA.on('moveend', moveEndFunc);
 
