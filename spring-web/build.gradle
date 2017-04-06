@@ -7,6 +7,7 @@ apply plugin: 'jacoco'
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
@@ -20,6 +21,7 @@ jar {
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 bootRun {
@@ -32,5 +34,8 @@ targetCompatibility = 1.8
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-devtools")
+    compile("io.opentracing.contrib:opentracing-spring-web-autoconfigure:0.0.2")
+    compile("io.opentracing.brave:brave-opentracing:0.19.1")
+    compile("io.zipkin.reporter:zipkin-sender-okhttp3:0.6.13")
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
