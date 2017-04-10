@@ -59,25 +59,27 @@ $(function() {
     map.on('mousemove', function(e) {
         var x = Math.round(e.latlng.lng)
         var y = Math.round(1000 - e.latlng.lat)
-        $.ajax({
-            url: "/heatmap",
-            data: {
-                x: x,
-                y: y
-            },
-            dataType: "json",
-            success: function (result) {
-                var rgb = Math.floor(256 * result);
-                var canvas = document.getElementById('heatmap');
-                if (canvas.getContext) {
-                    var ctx = canvas.getContext('2d');
-                    ctx.save();
-                    ctx.fillStyle = 'rgb(' + rgb + ', ' + rgb + ', ' + rgb + ')';
-                    ctx.fillRect(x, y, 1, 1);
-                    ctx.restore();
+        if (x >= 0 && x < 1000 && y >= 0 && y < 1000) {
+            $.ajax({
+                url: "/heatmap",
+                data: {
+                    x: x,
+                    y: y
+                },
+                dataType: "json",
+                success: function (result) {
+                    var rgb = Math.floor(256 * result);
+                    var canvas = document.getElementById('heatmap');
+                    if (canvas.getContext) {
+                        var ctx = canvas.getContext('2d');
+                        ctx.save();
+                        ctx.fillStyle = 'rgb(' + rgb + ', ' + rgb + ', ' + rgb + ')';
+                        ctx.fillRect(x, y, 1, 1);
+                        ctx.restore();
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 
     map.on('overlayadd', function(e) {

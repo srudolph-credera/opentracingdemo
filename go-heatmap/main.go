@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
-	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 
+	"github.com/ExpansiveWorlds/instrumentedsql"
+	iot "github.com/ExpansiveWorlds/instrumentedsql/opentracing"
+	sqlite3 "github.com/mattn/go-sqlite3"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	zipkin "github.com/openzipkin/zipkin-go-opentracing"
@@ -16,6 +19,8 @@ import (
 var zipkinEndpoint = "http://localhost:9411/api/v1/spans"
 var serviceAddress = "localhost:8081"
 var serviceName = "Go Heat Map"
+var db *sql.DB
+var queryActivity *sql.Stmt
 
 func handleHeatMapRequest(w http.ResponseWriter, req *http.Request) {
 	wireContext, err := opentracing.GlobalTracer().Extract(
@@ -33,13 +38,50 @@ func handleHeatMapRequest(w http.ResponseWriter, req *http.Request) {
 	span := opentracing.GlobalTracer().StartSpan(
 		"Heat Map - Go",
 		ext.RPCServerOption(wireContext))
-	span = span.SetTag("x", req.Form["x"][0])
-	span = span.SetTag("y", req.Form["y"][0])
-	activity := strconv.FormatFloat(rand.Float64(), 'f', -1, 64)
+
+	xArr, ok := req.Form["x"]
+	if !ok || len(xArr) != 1 {
+		fmt.Println("Could not find a single value for 'x'")
+		xArr = []string{"0"}
+	}
+
+	yArr, ok := req.Form["y"]
+	if !ok || len(yArr) != 1 {
+		fmt.Println("Could not find a single value for 'y'")
+		yArr = []string{"0"}
+	}
+
+	span = span.SetTag("x", xArr[0])
+	span = span.SetTag("y", yArr[0])
+
+	x, err := strconv.Atoi(xArr[0])
+	if err != nil {
+		fmt.Printf("Unable to parse x as an integer: %v\n", err)
+	} else if x < 0 || x >= 1000 {
+		fmt.Printf("X value out of range, setting to 0: %v\n", x)
+		x = 0
+	}
+
+	y, err := strconv.Atoi(yArr[0])
+	if err != nil {
+		fmt.Printf("Unable to parse y as an integer: %v\n", err)
+	} else if y < 0 || y >= 1000 {
+		fmt.Printf("Y value out of range, setting to 0: %v\n", y)
+		y = 0
+	}
+
+	var level float64
+	ctx := opentracing.ContextWithSpan(req.Context(), span)
+	row := queryActivity.QueryRowContext(ctx, x, y)
+	err = row.Scan(&level)
+	if err != nil {
+		fmt.Printf("Unable to process result as float64: %v\n", err)
+	}
+
+	activity := strconv.FormatFloat(level, 'f', -1, 64)
 	span = span.SetTag("result", activity)
 	defer span.Finish()
 
-	ctx := opentracing.ContextWithSpan(req.Context(), span)
 	req = req.WithContext(ctx)
 
 	w.Write([]byte(activity))
@@ -63,7 +105,25 @@ func main() {
 	// Initialize OpenTracing wrapper
 	opentracing.SetGlobalTracer(tracer)
 
-	rand.Seed(time.Now().UnixNano())
+	// Initialize database
+	sql.Register("instrumented-sqlite3", instrumentedsql.WrapDriver(&sqlite3.SQLiteDriver{}, instrumentedsql.WithTracer(iot.NewTracer())))
+	db, err = sql.Open("instrumented-sqlite3", "../activity.db")
+	if err != nil {
+		fmt.Printf("Could not open database: %v\n", err)
+		os.Exit(-1)
+	}
+
+	ctx := context.Background()
+	span, spanCtx := opentracing.StartSpanFromContext(ctx, "Prepare SQL")
+	queryActivity, err = db.PrepareContext(spanCtx, "SELECT level FROM activity WHERE x = $1 AND y = $2")
+	if err != nil {
+		fmt.Printf("Could not prepare query: %v\n", err)
+		os.Exit(-1)
+	}
+
+	span.Finish()
+
+	// Start server
 	mux := http.NewServeMux()
 	mux.HandleFunc("/heatmap", handleHeatMapRequest)
 	fmt.Printf("Service %v started at %v\n", serviceName, serviceAddress)
