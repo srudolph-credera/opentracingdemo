@@ -24,7 +24,7 @@ public class Application {
                 .reporter(reporter)
                 .build();
 
-        // Finally, wrap this with the OpenTracing Api
+        // Finally, wrap this with the OpenTracing API
         return BraveTracer.wrap(braveTracer);
     }
 

@@ -10,3 +10,11 @@ out/
 
 activity.db
 
+/lib/
+/classes/
+/target/
+.lein-deps-sum
+.lein-repl-history
+.lein-plugins/
+.lein-failures
+.nrepl-port
