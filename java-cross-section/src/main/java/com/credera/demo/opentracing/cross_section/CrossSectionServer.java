@@ -3,10 +3,12 @@ package com.credera.demo.opentracing.cross_section;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import io.opentracing.Tracer;
 
 import com.credera.demo.opentracing.cross_section.CrossSectionOuterClass.ActivityLevels;
 import com.credera.demo.opentracing.cross_section.CrossSectionOuterClass.ActivityLevels.Builder;
 import com.credera.demo.opentracing.cross_section.CrossSectionOuterClass.Range;
+import io.opentracing.contrib.ServerTracingInterceptor;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -17,13 +19,16 @@ class CrossSectionServer {
     private final int port;
     private final Server server;
 
-    CrossSectionServer(int port) throws IOException {
-        this(ServerBuilder.forPort(port), port);
+    CrossSectionServer(int port, Tracer tracer) throws IOException {
+        this(ServerBuilder.forPort(port), port, tracer);
     }
 
-    private CrossSectionServer(ServerBuilder<?> serverBuilder, int port) {
+    private CrossSectionServer(ServerBuilder<?> serverBuilder, int port, Tracer tracer) {
         this.port = port;
-        this.server = serverBuilder.addService(new CrossSectionService()).build();
+        ServerTracingInterceptor interceptor = new ServerTracingInterceptor(tracer);
+        this.server = serverBuilder
+                .addService(interceptor.intercept(new CrossSectionService()))
+                .build();
     }
 
     void start() throws IOException {

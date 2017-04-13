@@ -18,14 +18,14 @@ public class Application {
         // Now, create a Brave tracer with the service name you want to see in Zipkin.
         //   (the dependency is io.zipkin.brave:brave)
         brave.Tracer braveTracer = brave.Tracer.newBuilder()
-                .localServiceName("spring-boot-web")
+                .localServiceName("Java Cross Section")
                 .reporter(reporter)
                 .build();
 
         // Finally, wrap this with the OpenTracing API
         Tracer tracer = BraveTracer.wrap(braveTracer);
 
-        CrossSectionServer server = new CrossSectionServer(8082);
+        CrossSectionServer server = new CrossSectionServer(8082, tracer);
         server.start();
         server.blockUntilShutdown();
     }

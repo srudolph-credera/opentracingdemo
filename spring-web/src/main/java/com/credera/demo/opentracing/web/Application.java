@@ -30,7 +30,7 @@ public class Application {
 
     @Bean
     CrossSectionClient crossSectionClient() {
-        return new CrossSectionClient("localhost", 8082);
+        return new CrossSectionClient("localhost", 8082, zipkinTracer());
     }
 
     public static void main(String[] args) {

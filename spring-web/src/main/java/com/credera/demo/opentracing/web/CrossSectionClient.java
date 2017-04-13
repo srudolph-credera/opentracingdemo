@@ -5,29 +5,29 @@ import com.credera.demo.opentracing.cross_section.CrossSectionGrpc.CrossSectionB
 import com.credera.demo.opentracing.cross_section.CrossSectionOuterClass.ActivityLevels;
 import com.credera.demo.opentracing.cross_section.CrossSectionOuterClass.Point;
 import com.credera.demo.opentracing.cross_section.CrossSectionOuterClass.Range;
-import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
+import io.opentracing.Tracer;
+import io.opentracing.contrib.ClientTracingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.TimeUnit;
-
-public class CrossSectionClient {
+class CrossSectionClient {
     private static final Logger LOG = LoggerFactory.getLogger(CrossSectionController.class);
 
-    private final ManagedChannel channel;
     private final CrossSectionBlockingStub blockingStub;
-    public CrossSectionClient(String host, int port) {
-        this(ManagedChannelBuilder.forAddress(host, port).usePlaintext(true));
+
+    CrossSectionClient(String host, int port, Tracer tracer) {
+        this(ManagedChannelBuilder.forAddress(host, port).usePlaintext(true), tracer);
     }
 
-    private CrossSectionClient(ManagedChannelBuilder<?> channelBuilder) {
-        this.channel = channelBuilder.build();
-        this.blockingStub = CrossSectionGrpc.newBlockingStub(this.channel);
+    private CrossSectionClient(ManagedChannelBuilder<?> channelBuilder, Tracer tracer) {
+        ClientTracingInterceptor interceptor = new ClientTracingInterceptor(tracer);
+        this.blockingStub = CrossSectionGrpc.newBlockingStub(
+                interceptor.intercept(channelBuilder.build()));
     }
 
-    public Double[] getCrossSection(int minX, int minY, int maxX, int maxY) {
+    Double[] getCrossSection(int minX, int minY, int maxX, int maxY) {
         Range range = Range.newBuilder()
                 .setStart(Point.newBuilder().setX(minX).setY(minY).build())
                 .setEnd(Point.newBuilder().setX(maxX).setY(maxY).build()).build();

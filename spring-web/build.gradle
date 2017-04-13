@@ -59,13 +59,14 @@ sourceSets {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-devtools")
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-devtools'
     compile 'io.grpc:grpc-netty:1.2.0'
     compile 'io.grpc:grpc-protobuf:1.2.0'
     compile 'io.grpc:grpc-stub:1.2.0'
-    compile("io.opentracing.contrib:opentracing-spring-web-autoconfigure:0.0.2")
-    compile("io.opentracing.brave:brave-opentracing:0.19.1")
-    compile("io.zipkin.reporter:zipkin-sender-okhttp3:0.6.13")
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile 'io.opentracing.contrib:grpc-opentracing:0.2.0'
+    compile 'io.opentracing.contrib:opentracing-spring-web-autoconfigure:0.0.2'
+    compile 'io.opentracing.brave:brave-opentracing:0.19.1'
+    compile 'io.zipkin.reporter:zipkin-sender-okhttp3:0.6.13'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
