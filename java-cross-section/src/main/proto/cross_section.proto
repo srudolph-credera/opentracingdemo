@@ -1,0 +1,25 @@
+syntax = "proto3";
+option java_package = "com.credera.demo.opentracing.cross_section";
+
+package crosssection;
+
+// Points are x, y positions in the image where 0, 0 is the upper-left corner
+message Point {
+    int32 x = 1;
+    int32 y = 2;
+}
+
+message Range {
+    Point start = 1;
+    Point end = 2;
+}
+
+message ActivityLevels {
+    repeated double level = 1;
+}
+
+service CrossSection {
+    // Obtain the activity values between the specified points
+    rpc GetCrossSection(Range) returns (ActivityLevels) {}
+}
+

@@ -1,18 +1,17 @@
+apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'com.google.protobuf'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'jacoco'
+
+mainClassName = "com.credera.demo.opentracing.cross_section.Application"
 
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
     }
     dependencies {
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
     }
 }
 
@@ -34,21 +33,13 @@ protobuf {
 }
 
 jar {
-    baseName = 'spring-web'
+    baseName = 'cross-section'
     version = '0.1.0'
 }
 
 repositories {
-    jcenter()
     mavenCentral()
 }
-
-bootRun {
-    addResources = true
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 sourceSets {
     main {
@@ -59,13 +50,11 @@ sourceSets {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-devtools")
     compile 'io.grpc:grpc-netty:1.2.0'
     compile 'io.grpc:grpc-protobuf:1.2.0'
     compile 'io.grpc:grpc-stub:1.2.0'
-    compile("io.opentracing.contrib:opentracing-spring-web-autoconfigure:0.0.2")
-    compile("io.opentracing.brave:brave-opentracing:0.19.1")
-    compile("io.zipkin.reporter:zipkin-sender-okhttp3:0.6.13")
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile 'io.opentracing.brave:brave-opentracing:0.19.2'
+    compile 'io.zipkin.reporter:zipkin-sender-okhttp3:0.6.13'
+    testCompile 'junit:junit:4.12'
 }
+
