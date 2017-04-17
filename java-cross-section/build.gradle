@@ -47,7 +47,6 @@ sourceSets {
             srcDirs = [
                     '../proto/java/src/gen/main/grpc',
                     '../proto/java/src/gen/main/java',
-                    '../java-okhttp/opentracing-okhttp3/src/main/java',
                     'src/main/java']
         }
     }
@@ -59,7 +58,7 @@ dependencies {
     compile 'io.grpc:grpc-stub:1.2.0'
     compile 'io.opentracing.brave:brave-opentracing:0.19.2'
     compile 'io.opentracing.contrib:grpc-opentracing:0.2.0'
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    compile 'io.opentracing.contrib:opentracing-okhttp3:0.0.1'
     compile 'io.zipkin.reporter:zipkin-sender-okhttp3:0.6.13'
     testCompile 'junit:junit:4.12'
 }

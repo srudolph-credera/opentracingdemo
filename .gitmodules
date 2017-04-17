@@ -1,3 +1,0 @@
-[submodule "java-okhttp"]
-	path = java-okhttp
-	url = git@github.com:opentracing-contrib/java-okhttp.git

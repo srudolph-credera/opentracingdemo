@@ -21,7 +21,7 @@ public class Application {
         // Now, create a Brave tracer with the service name you want to see in Zipkin.
         //   (the dependency is io.zipkin.brave:brave)
         brave.Tracer braveTracer = brave.Tracer.newBuilder()
-                .localServiceName("spring-boot-web")
+                .localServiceName("Spring Boot Web")
                 .reporter(reporter)
                 .build();
 
