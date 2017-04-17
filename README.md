@@ -39,6 +39,13 @@ $ cd $(go env GOPATH)/src/github.com/srudolph-credera/opentracingdemo/go-heatmap
 $ go run main.go
 ```
 
+### Start Cross Section Service
+From another terminal:
+```bash
+$ cd $(go env GOPATH)/src/github.com/srudolph-credera/opentracingdemo/java-cross-section
+$ ./gradlew run
+```
+
 ### Connect to Demo Site and Zipkin UI
 * [Demo Page](http://localhost:8080)
 * [Zipkin UI](http://localhost:9411)
@@ -51,8 +58,10 @@ $ go run main.go
 * [OpenTracing clients](https://github.com/opentracing)
 * [OpenTracing Java Spring Web](https://github.com/opentracing-contrib/java-spring-web)
 * [OpenTracing OkHttp](https://github.com/opentracing-contrib/java-okhttp)
+* [GRPC-OpenTracing](https://github.com/grpc-ecosystem/grpc-opentracing)
 * [Zipkin clients](https://github.com/openzipkin)
 * [Spring](http://spring.io)
 * [OkHttp](https://github.com/square/okhttp)
+* [gRPC](http://www.grpc.io)
 * [Instrumented SQL](http://github.com/ExpansiveWorlds/instrumentedsql)
 * [SQLite3 Go Driver](github.com/mattn/go-sqlite3)
