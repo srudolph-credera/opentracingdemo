@@ -20,6 +20,9 @@ public class HeatmapController {
     @Autowired
     private Tracer tracer;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @RequestMapping("/heatmap")
     public double heatmap(@RequestParam(value = "x") Integer x, @RequestParam(value = "y") Integer y) {
         if (x == null) {
@@ -34,9 +37,7 @@ public class HeatmapController {
 
         // Forward request to Go Heat Map service
         String requestUrl = String.format("http://localhost:8081/heatmap?x=%d&y=%d", x, y);
-        RestTemplate heatMapTemplate = new RestTemplate();
-        heatMapTemplate.setInterceptors(Collections.singletonList(new TracingRestTemplateInterceptor(tracer)));
-        ResponseEntity<String> response = heatMapTemplate.getForEntity(requestUrl, String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
 
         return Double.parseDouble(response.getBody());
     }

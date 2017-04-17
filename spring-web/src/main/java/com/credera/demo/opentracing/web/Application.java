@@ -5,6 +5,7 @@ import io.opentracing.Tracer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 import zipkin.reporter.AsyncReporter;
 import zipkin.reporter.okhttp3.OkHttpSender;
 
@@ -29,8 +30,8 @@ public class Application {
     }
 
     @Bean
-    CrossSectionClient crossSectionClient() {
-        return new CrossSectionClient("localhost", 8082, zipkinTracer());
+    RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     public static void main(String[] args) {

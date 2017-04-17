@@ -11,17 +11,30 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.ClientTracingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
+@Component
 class CrossSectionClient {
     private static final Logger LOG = LoggerFactory.getLogger(CrossSectionController.class);
 
-    private final CrossSectionBlockingStub blockingStub;
+    @Autowired
+    private Tracer tracer;
 
-    CrossSectionClient(String host, int port, Tracer tracer) {
-        this(ManagedChannelBuilder.forAddress(host, port).usePlaintext(true), tracer);
-    }
+    private CrossSectionBlockingStub blockingStub;
 
-    private CrossSectionClient(ManagedChannelBuilder<?> channelBuilder, Tracer tracer) {
+    @Value("${grpc.host:localhost}")
+    private String grpcHost;
+
+    @Value("${grpc.port:8082}")
+    private int grpcPort;
+
+    @PostConstruct
+    public void init() {
+        ManagedChannelBuilder channelBuilder = ManagedChannelBuilder.forAddress(grpcHost, grpcPort).usePlaintext(true);
         ClientTracingInterceptor interceptor = new ClientTracingInterceptor(tracer);
         this.blockingStub = CrossSectionGrpc.newBlockingStub(
                 interceptor.intercept(channelBuilder.build()));

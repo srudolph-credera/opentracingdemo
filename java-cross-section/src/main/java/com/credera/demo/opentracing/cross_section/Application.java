@@ -1,9 +1,15 @@
 package com.credera.demo.opentracing.cross_section;
 
 import io.opentracing.Tracer;
+import io.opentracing.contrib.okhttp3.SpanDecorator;
+import io.opentracing.contrib.okhttp3.TracingInterceptor;
 import brave.opentracing.BraveTracer;
+import okhttp3.OkHttpClient;
+import okhttp3.OkHttpClient.Builder;
 import zipkin.reporter.AsyncReporter;
 import zipkin.reporter.okhttp3.OkHttpSender;
+
+import java.util.Arrays;
 
 public class Application {
 
@@ -25,7 +31,14 @@ public class Application {
         // Finally, wrap this with the OpenTracing API
         Tracer tracer = BraveTracer.wrap(braveTracer);
 
-        CrossSectionServer server = new CrossSectionServer(8082, tracer);
+        // Create HTTP client for accessing activity data from heatmap service
+        TracingInterceptor tracingInterceptor = new TracingInterceptor(tracer, Arrays.asList(SpanDecorator.STANDARD_TAGS));
+        OkHttpClient client =  (new Builder())
+                .addInterceptor(tracingInterceptor)
+                .addNetworkInterceptor(tracingInterceptor)
+                .build();
+
+        CrossSectionServer server = new CrossSectionServer(8082, tracer, client);
         server.start();
         server.blockUntilShutdown();
     }
