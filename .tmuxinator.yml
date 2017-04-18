@@ -1,0 +1,31 @@
+name: opentracing-demo
+root: ./
+
+pre:
+    - cd go-create-db
+    - go run main.go
+    - cd ..
+    - curl -L 'https://search.maven.org/remote_content?g=io.zipkin.java&a=zipkin-server&v=LATEST&c=exec' > zipkin.jar
+
+startup_pane: 5
+
+windows:
+  - main:
+      layout: tiled 
+      # Synchronize all panes of this window, can be enabled before or after the pane commands run.
+      # 'before' represents legacy functionality and will be deprecated in a future release, in favour of 'after'
+      # synchronize: after
+      panes:
+        - zipkin:
+            - java -jar zipkin.jar
+        - spring:
+            - cd spring-web
+            - ./gradlew bootRun
+        - go:
+            - cd go-heatmap
+            - go run main.go
+        - java:
+            - cd java-cross-section
+            - ./gradlew run
+        - work:
+

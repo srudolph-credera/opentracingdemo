@@ -10,40 +10,65 @@ The demo site allows the user to navigate the final image created by Reddit's [r
 
 * [Go 1.8.x](https://golang.org/dl/)
 * [Java 1.8.x JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+
+### Option 1 - Manual Start
+
+#### Additional Prerequisites
+
 * [Zipkin](https://search.maven.org/remote_content?g=io.zipkin.java&a=zipkin-server&v=LATEST&c=exec)
 
-### Prepare Activity Database
+#### Prepare Activity Database
 ```bash
 $ go get github.com/srudolph-credera/opentracingdemo
 $ cd $(go env GOPATH)/src/github.com/srudolph-credera/opentracingdemo/go-create-db
 $ go run main.go
 ```
 
-### Start Zipkin
+#### Start Zipkin
 From a terminal with the same current directory as the Zipkin jar was downloaded:
 ```bash
 $ java -jar zipkin*.jar
 ```
 
-### Start Spring Boot
+#### Start Spring Boot
 From another terminal:
 ```bash
 $ cd $(go env GOPATH)/src/github.com/srudolph-credera/opentracingdemo/spring-web
 $ ./gradlew bootRun
 ```
 
-### Start Heat Map Service
+#### Start Heat Map Service
 From another terminal:
 ```bash
 $ cd $(go env GOPATH)/src/github.com/srudolph-credera/opentracingdemo/go-heatmap
 $ go run main.go
 ```
 
-### Start Cross Section Service
+#### Start Cross Section Service
 From another terminal:
 ```bash
 $ cd $(go env GOPATH)/src/github.com/srudolph-credera/opentracingdemo/java-cross-section
 $ ./gradlew run
+```
+
+### Option 2 - Tmuxinator Start
+
+#### Additional Prerequisites
+
+* [tmux](http://tmux.github.io)
+* [tmuxinator](https://github.com/tmuxinator/tmuxinator)
+
+#### Setup Project
+
+```bash
+$ go get github.com/srudolph-credera/opentracingdemo
+```
+
+#### Start all
+
+```bash
+$ cd $(go env GOPATH)/src/github.com/srudolph-credera/opentracingdemo
+$ tmuxinator
 ```
 
 ### Connect to Demo Site and Zipkin UI
