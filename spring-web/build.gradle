@@ -35,7 +35,7 @@ protobuf {
 
 jar {
     baseName = 'spring-web'
-    version = '0.1.0'
+    version = '0.2.0'
 }
 
 repositories {
@@ -65,8 +65,8 @@ dependencies {
     compile 'io.grpc:grpc-protobuf:1.2.0'
     compile 'io.grpc:grpc-stub:1.2.0'
     compile 'io.opentracing.contrib:grpc-opentracing:0.2.0'
-    compile 'io.opentracing.contrib:opentracing-spring-web-autoconfigure:0.0.2'
-    compile 'io.opentracing.brave:brave-opentracing:0.19.1'
+    compile 'io.opentracing.contrib:opentracing-spring-web-autoconfigure:0.0.3'
+    compile 'io.opentracing.brave:brave-opentracing:0.19.3'
     compile 'io.zipkin.reporter:zipkin-sender-okhttp3:0.6.13'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
