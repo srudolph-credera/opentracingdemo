@@ -12,10 +12,7 @@ import com.credera.demo.opentracing.cross_section.CrossSectionOuterClass.Range;
 import io.opentracing.contrib.OpenTracingContextKey;
 import io.opentracing.contrib.ServerTracingInterceptor;
 import io.opentracing.contrib.okhttp3.TagWrapper;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,11 +25,11 @@ class CrossSectionServer {
     private final int port;
     private final Server server;
 
-    CrossSectionServer(int port, Tracer tracer, OkHttpClient client) throws IOException {
+    CrossSectionServer(int port, Tracer tracer, Call.Factory client) throws IOException {
         this(ServerBuilder.forPort(port), port, tracer, client);
     }
 
-    private CrossSectionServer(ServerBuilder<?> serverBuilder, int port, Tracer tracer, OkHttpClient client) {
+    private CrossSectionServer(ServerBuilder<?> serverBuilder, int port, Tracer tracer, Call.Factory client) {
         this.port = port;
         ServerTracingInterceptor interceptor = new ServerTracingInterceptor(tracer);
         this.server = serverBuilder
@@ -60,9 +57,9 @@ class CrossSectionServer {
     }
 
     private static class CrossSectionService extends CrossSectionGrpc.CrossSectionImplBase {
-        private final OkHttpClient httpClient;
+        private final Call.Factory httpClient;
 
-        CrossSectionService(OkHttpClient client) {
+        CrossSectionService(Call.Factory client) {
             this.httpClient = client;
         }
 
