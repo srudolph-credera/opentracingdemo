@@ -18,11 +18,11 @@ buildscript {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.2.0"
+        artifact = "com.google.protobuf:protoc:3.3.1"
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.2.0'
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.5.0'
         }
     }
     generateProtoTasks {
@@ -61,12 +61,12 @@ sourceSets {
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-devtools'
-    compile 'io.grpc:grpc-netty:1.2.0'
-    compile 'io.grpc:grpc-protobuf:1.2.0'
-    compile 'io.grpc:grpc-stub:1.2.0'
+    compile 'io.grpc:grpc-netty:1.5.0'
+    compile 'io.grpc:grpc-protobuf:1.5.0'
+    compile 'io.grpc:grpc-stub:1.5.0'
     compile 'io.opentracing.contrib:grpc-opentracing:0.2.0'
-    compile 'io.opentracing.contrib:opentracing-spring-web-autoconfigure:0.0.3'
-    compile 'io.opentracing.brave:brave-opentracing:0.19.3'
-    compile 'io.zipkin.reporter:zipkin-sender-okhttp3:0.6.13'
+    compile 'io.opentracing.contrib:opentracing-spring-web-autoconfigure:0.0.4'
+    compile 'io.opentracing.brave:brave-opentracing:0.20.0'
+    compile 'io.zipkin.reporter:zipkin-sender-okhttp3:1.0.0'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }

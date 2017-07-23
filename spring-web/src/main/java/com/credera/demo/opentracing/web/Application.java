@@ -1,5 +1,6 @@
 package com.credera.demo.opentracing.web;
 
+import brave.Tracing;
 import brave.opentracing.BraveTracer;
 import io.opentracing.Tracer;
 import org.springframework.boot.SpringApplication;
@@ -18,15 +19,15 @@ public class Application {
         OkHttpSender sender = OkHttpSender.create("http://127.0.0.1:9411/api/v1/spans");
         AsyncReporter reporter = AsyncReporter.builder(sender).build();
 
-        // Now, create a Brave tracer with the service name you want to see in Zipkin.
+        // Now, create a Brave tracing component with the service name you want to see in Zipkin.
         //   (the dependency is io.zipkin.brave:brave)
-        brave.Tracer braveTracer = brave.Tracer.newBuilder()
+        Tracing braveTracing = Tracing.newBuilder()
                 .localServiceName("Spring Boot Web")
                 .reporter(reporter)
                 .build();
 
         // Finally, wrap this with the OpenTracing API
-        return BraveTracer.wrap(braveTracer);
+        return BraveTracer.create(braveTracing);
     }
 
     @Bean
